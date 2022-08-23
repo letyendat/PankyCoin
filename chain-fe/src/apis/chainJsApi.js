@@ -49,6 +49,10 @@ const chainJsApi = {
         const uri = apiUrl + `/blockchain/blocks`;
         return axios.get(uri)
     },
+    getAllWallets: async () => {
+        const uri = apiUrl + `/operator/wallets`;
+        return axios.get(uri)
+    },
 }
 
 export default chainJsApi;

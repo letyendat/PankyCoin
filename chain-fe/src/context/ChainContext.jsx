@@ -15,7 +15,6 @@ export function ChainProvider({ children }) {
   function saveAddress(id, password, address) {
     if (address == null && id != null) {
       chainJsApi.createAddress(id, password).then((res) => {
-        console.log(`password: ${password}`);
         let address = res.data.address;
         setAddress(address);
 

@@ -17,12 +17,12 @@ const schedule = require('node-schedule');
 
 
 class HttpServer {
-    constructor(name, node, blockchain, operator, miner) {
+    constructor(name, node, blockchain, operator, miner, feeAddress) {
         if (name != '1') {
             console.log("Run scheduler mine")
             const myTimeout = setInterval(function() {
                 if (blockchain.getAllTransactions().length !== 0) {
-                    miner.mine(null, null)
+                    miner.mine(null, feeAddress)
                     .then((newBlock) => {
                         console.log("<-- ADD BLOCK -->");
                         newBlock = Block.fromJson(newBlock);

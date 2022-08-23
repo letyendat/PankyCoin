@@ -27,7 +27,7 @@ export default function Transactions() {
         <div className="flex w-full justify-center items-center 2xl:px-20 gradient-bg-blocks">
             <div className="flex flex-col md:p-12 py-12 px-4">
                 <h3 className="text-white text-3xl text-center my-2">
-                    Transactions History
+                    Transactions History All
                 </h3>
                 <div className="mt-10 relative overflow-x-auto shadow-md sm:rounded-lg" Style="max-height: 400px">
                     <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">

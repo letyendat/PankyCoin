@@ -28,6 +28,10 @@ export default function Navbar() {
   const [isShowPrivateKeyModal, setIsShowPrivateKeyModal] = useState(false);
 
   const [transactions, setTransactions] = useState([]);
+  const [allAddress, setAllAddress] = useState([]);
+
+
+  const [isShowAllAddressModal, setIsShowAllAddressModal] = useState(false);
 
   const [isShowTransactionsModal, setIsShowTransactionsModal] = useState(false);
 
@@ -60,13 +64,15 @@ export default function Navbar() {
     setIsShowTransactionsModal(false);
   }
 
+  function onCloseCbAllAddress() {
+    setIsShowAllAddressModal(false);
+  }
+
   function onRegisterClick(e) {
     e.preventDefault()
 
     if (registerData?.password) {
       chainJsApi.createWallet(registerData.password).then((res) => {
-        console.log(res);
-
         saveAddress(res?.data.id, registerData.password, res?.data.addresses[0]);
 
         setIsShowPrivateKeyModal(true);
@@ -93,7 +99,6 @@ export default function Navbar() {
 
   function onStatisticsClick(e) {
     e.preventDefault()
-    console.log("123123123");
 
     chainJsApi.getAllBlocks().then((res) => {
       let vecTransactions = [];
@@ -114,6 +119,23 @@ export default function Navbar() {
     });
 
     setIsShowTransactionsModal(true);
+  }
+
+  function onAccountStatisticsClick(e) {
+    e.preventDefault()
+
+    chainJsApi.getAllWallets().then((res) => {
+      let vecAddress = [];
+      res.data.forEach(wallet => {
+        vecAddress.push(wallet.addresses);
+      });
+
+      setAllAddress(vecAddress || []);
+    }).catch((err) => {
+      console.log(err);
+    });
+
+    setIsShowAllAddressModal(true);
   }
 
   function copyToClipboard(text) {
@@ -137,9 +159,18 @@ export default function Navbar() {
           {
             address ? (
               <li type="button submit" className="bg-[#2952e3] py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]"
-                onClick={onStatisticsClick}
+                onClick={onAccountStatisticsClick}
               >
                 Account statistics
+              </li>
+            ) : (<p></p>)
+          }
+          {
+            address ? (
+              <li type="button submit" className="bg-[#2952e3] py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]"
+                onClick={onStatisticsClick}
+              >
+                Your Transactions History
               </li>
             ) : (<p></p>)
           }
@@ -364,7 +395,7 @@ export default function Navbar() {
         </Modal.Body>
       </Modal>
 
-      {/**Account Statistics Key */}
+      {/**History Transaction Your */}
       <Modal
         show={isShowTransactionsModal}
         size=""
@@ -374,9 +405,9 @@ export default function Navbar() {
         <Modal.Header />
         <Modal.Body>
 
-        <h3 className="text-3xl text-center my-2">
-                Your Transactions History
-        </h3>
+          <h3 className="text-3xl text-center my-2">
+            Your Transactions History
+          </h3>
           <div className="mt-10 relative overflow-x-auto shadow-md sm:rounded-lg" Style="max-height: 400px">
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -414,6 +445,51 @@ export default function Navbar() {
                         {/* <td className="px-6 py-4 text-right">
                                                 <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                                             </td> */}
+                      </tr>
+                    )
+                  })
+                }
+              </tbody>
+            </table>
+          </div>
+
+        </Modal.Body>
+      </Modal>
+
+      {/**Account Statistics Key */}
+      <Modal
+        show={isShowAllAddressModal}
+        size=""
+        popup={true}
+        onClose={onCloseCbAllAddress}
+      >
+        <Modal.Header />
+        <Modal.Body>
+
+          <h3 className="text-3xl text-center my-2">
+            Account Statistics
+          </h3>
+          <h5 className="text-2xl text-center my-2">
+            Total number of existing addresses: {allAddress.length}
+          </h5>
+          <div className="mt-10 relative overflow-x-auto shadow-md sm:rounded-lg" Style="max-height: 400px">
+
+            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                  <th scope="col" className="px-6 py-3">
+                    Address
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  allAddress.map((address, index) => {
+                    return (
+                      <tr className="bg-white dark:bg-gray-800" key={address}>
+                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                          {address}
+                        </th>
                       </tr>
                     )
                   })
